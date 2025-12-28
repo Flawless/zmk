@@ -25,6 +25,11 @@ left_encoder: &encoder {
         device = <&arduino_serial>;
     };
 
+    single_wire_split {
+        compatible = "zmk,single-wire-split";
+        data-gpios = <&arduino_header 8 GPIO_ACTIVE_HIGH>;
+    };
+
     split_matrix_transform: split_matrix_transform {
         compatible = "zmk,matrix-transform";
         rows = <4>;
