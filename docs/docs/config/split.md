@@ -72,6 +72,25 @@ The following settings only apply when using wired split in polling mode:
 | ------------------------------------------ | ---- | ---------------------------------------------------- | ------- |
 | `CONFIG_ZMK_SPLIT_WIRED_POLLING_RX_PERIOD` | int  | Number of ticks between calls to poll for split data | 10      |
 
+### Single-wire Splits
+
+Single-wire split transport is a half-duplex protocol intended for TRRS/TRS based splits that only
+have one data line plus ground (and optionally VCC). It uses a GPIO pin for a bit-banged UART-style
+framing layer and polls the peripheral for events.
+
+The following single-wire split settings are defined in
+[zmk/app/src/split/single_wire/Kconfig](https://github.com/zmkfirmware/zmk/blob/main/app/src/split/single_wire/Kconfig).
+
+| Config                                         | Type | Description                                                       | Default |
+| ---------------------------------------------- | ---- | ----------------------------------------------------------------- | ------- |
+| `CONFIG_ZMK_SPLIT_SINGLE_WIRE`                 | bool | Use single-wire split transport                                   | n       |
+| `CONFIG_ZMK_SPLIT_SINGLE_WIRE_ROLE_MASTER`     | bool | Select master role (requires `CONFIG_ZMK_SPLIT_ROLE_CENTRAL=y`)    | n       |
+| `CONFIG_ZMK_SPLIT_SINGLE_WIRE_ROLE_SLAVE`      | bool | Select slave role (requires `CONFIG_ZMK_SPLIT_ROLE_CENTRAL=n`)     | n       |
+| `CONFIG_ZMK_SPLIT_SINGLE_WIRE_BIT_TIME_US`     | int  | Bit duration for the software UART framing                        | 40      |
+| `CONFIG_ZMK_SPLIT_SINGLE_WIRE_POLL_INTERVAL_MS`| int  | Poll interval from the master                                     | 5       |
+| `CONFIG_ZMK_SPLIT_SINGLE_WIRE_RX_TIMEOUT_US`   | int  | Idle timeout between bytes when receiving                          | 2000    |
+| `CONFIG_ZMK_SPLIT_SINGLE_WIRE_START_TIMEOUT_US`| int  | Timeout waiting for the first start bit                            | 4000    |
+
 ## Devicetree
 
 ### Wired Split
@@ -85,6 +104,20 @@ Once you have a properly configured UART device, it needs to be assigned in a ne
     wired_split {
         compatible = "zmk,wired-split";
         device = <&pro_micro_serial>;
+    };
+};
+```
+
+### Single-wire Split
+
+Single-wire splits require a single GPIO pin to act as the shared data line. The line is configured
+with a pull-up when idle, and uses open-drain style output during transmission.
+
+```dts
+/ {
+    single_wire_split {
+        compatible = "zmk,single-wire-split";
+        data-gpios = <&gpio0 15 GPIO_ACTIVE_HIGH>;
     };
 };
 ```

@@ -1,0 +1,13 @@
+# Copyright (c) 2025 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+description: |
+  Single-wire half-duplex split transport using a shared GPIO data line.
+
+compatible: "zmk,single-wire-split"
+
+properties:
+  data-gpios:
+    type: phandle-array
+    required: true
+    description: GPIO pin used as the shared half-duplex data line.

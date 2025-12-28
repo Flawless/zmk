@@ -34,7 +34,9 @@ For the currently used BLE-based transport, split communication increases the av
 
 ## Split Transports
 
-ZMK supports two transports for connecting split parts: Bluetooth and full-duplex wired UART. Only one transport can be active at a time, so designs involving some portions connected via Bluetooth and others via full-duplex wired are _not_ supported.
+ZMK supports three transports for connecting split parts: Bluetooth, full-duplex wired UART, and
+single-wire half-duplex (bit-banged) wired GPIO. Only one transport can be active at a time, so
+designs involving some portions connected via Bluetooth and others via wired are _not_ supported.
 
 :::warning[Hot Plugging Cables]
 
@@ -54,11 +56,14 @@ The full-duplex wired UART transport is a recent addition, and is intended for t
 
 This transport will be enabled for designs that set `CONFIG_ZMK_SPLIT=y` and have a node with `compatible = "zmk,wired-split";` present in their devicetree configuration.
 
-:::note[Full Duplex vs Half Duplex]
-Full-duplex UART requires the use of two wires connecting the halves. Future half-duplex (single-wire) UART support, which is planned, will allow using wired ZMK with designs such as the Corne, Sweep, etc. that use only a single GPIO pin for bidirectional communication between split sides.
+### Single-Wire Half-Duplex (GPIO)
 
-Until half-duplex support is completed, those particular designs will not work with the wired split transport, and can only be used with the Bluetooth transport.
-:::
+The single-wire split transport is intended for classic TRRS/TRS split keyboards that only route one
+data line plus ground (and optionally VCC). It uses a GPIO line per side with a bit-banged framing
+layer and a master polling loop from the central side.
+
+This transport will be enabled for designs that set `CONFIG_ZMK_SPLIT=y` and have a node with
+`compatible = "zmk,single-wire-split";` present in their devicetree configuration.
 
 ### Runtime Switching
 

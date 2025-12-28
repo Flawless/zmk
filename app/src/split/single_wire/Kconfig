@@ -1,0 +1,80 @@
+# Copyright (c) 2025 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+if ZMK_SPLIT
+
+config ZMK_SPLIT_SINGLE_WIRE
+    bool "Single-wire split (half-duplex)"
+    default n
+    depends on DT_HAS_ZMK_SINGLE_WIRE_SPLIT_ENABLED
+    depends on !ZMK_SPLIT_WIRED
+    select GPIO
+    select RING_BUFFER
+    select CRC
+    help
+      Enable single-wire half-duplex transport for split keyboards. Requires
+      a devicetree node with compatible "zmk,single-wire-split".
+
+choice ZMK_SPLIT_SINGLE_WIRE_ROLE
+    prompt "Single-wire split role"
+    default ZMK_SPLIT_SINGLE_WIRE_ROLE_MASTER if ZMK_SPLIT_ROLE_CENTRAL
+    default ZMK_SPLIT_SINGLE_WIRE_ROLE_SLAVE if !ZMK_SPLIT_ROLE_CENTRAL
+    depends on ZMK_SPLIT_SINGLE_WIRE
+
+config ZMK_SPLIT_SINGLE_WIRE_ROLE_MASTER
+    bool "Master (central)"
+    depends on ZMK_SPLIT_ROLE_CENTRAL
+
+config ZMK_SPLIT_SINGLE_WIRE_ROLE_SLAVE
+    bool "Slave (peripheral)"
+    depends on !ZMK_SPLIT_ROLE_CENTRAL
+
+endchoice
+
+config ZMK_SPLIT_SINGLE_WIRE_PRIORITY
+    int "Single-wire transport priority"
+    default 30
+    depends on ZMK_SPLIT_SINGLE_WIRE
+
+config ZMK_SPLIT_SINGLE_WIRE_CMD_BUFFER_ITEMS
+    int "Single-wire command buffer items"
+    default 8
+    depends on ZMK_SPLIT_SINGLE_WIRE
+
+config ZMK_SPLIT_SINGLE_WIRE_EVENT_BUFFER_ITEMS
+    int "Single-wire event buffer items"
+    default 16
+    depends on ZMK_SPLIT_SINGLE_WIRE
+
+config ZMK_SPLIT_SINGLE_WIRE_BIT_TIME_US
+    int "Single-wire bit time (us)"
+    default 40
+    depends on ZMK_SPLIT_SINGLE_WIRE
+    help
+      Bit duration in microseconds for the software UART framing.
+
+config ZMK_SPLIT_SINGLE_WIRE_POLL_INTERVAL_MS
+    int "Single-wire poll interval (ms)"
+    default 5
+    depends on ZMK_SPLIT_SINGLE_WIRE
+
+config ZMK_SPLIT_SINGLE_WIRE_RX_TIMEOUT_US
+    int "Single-wire RX idle timeout (us)"
+    default 2000
+    depends on ZMK_SPLIT_SINGLE_WIRE
+    help
+      Maximum idle time between bytes before RX stops.
+
+config ZMK_SPLIT_SINGLE_WIRE_START_TIMEOUT_US
+    int "Single-wire RX start timeout (us)"
+    default 4000
+    depends on ZMK_SPLIT_SINGLE_WIRE
+    help
+      Maximum time to wait for the first start bit during a poll.
+
+config ZMK_SPLIT_SINGLE_WIRE_MUTEX_TIMEOUT_MS
+    int "Single-wire line mutex timeout (ms)"
+    default 5
+    depends on ZMK_SPLIT_SINGLE_WIRE
+
+endif # ZMK_SPLIT

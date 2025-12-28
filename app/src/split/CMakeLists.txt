@@ -9,6 +9,10 @@ if (CONFIG_ZMK_SPLIT_WIRED)
     add_subdirectory(wired)
 endif()
 
+if (CONFIG_ZMK_SPLIT_SINGLE_WIRE)
+    add_subdirectory(single_wire)
+endif()
+
 if (CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
     target_sources(app PRIVATE central.c)
     zephyr_linker_sources(SECTIONS ../../include/linker/zmk-split-transport-central.ld)

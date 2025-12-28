@@ -20,6 +20,7 @@ config ZMK_SPLIT_WIRED
     bool "Wired Split"
     default y
     depends on DT_HAS_ZMK_WIRED_SPLIT_ENABLED
+    depends on !ZMK_SPLIT_SINGLE_WIRE
     select SERIAL
     select RING_BUFFER
     select CRC
@@ -34,3 +35,4 @@ endif # ZMK_SPLIT
 
 rsource "bluetooth/Kconfig"
 rsource "wired/Kconfig"
+rsource "single_wire/Kconfig"
